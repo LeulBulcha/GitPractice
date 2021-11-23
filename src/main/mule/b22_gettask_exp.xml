@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6044fb63-4011-4da6-a872-1e4486ae19a2" basePath="/api">
+		<http:listener-connection host="0.0.0.0" port="8081"/>
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="de3c8ac8-c0e0-475a-bd16-f41bd9efafe3" >
+		<file:connection workingDir="C:\Users\leulb\OneDrive\Desktop\q2" />
+	</file:config>
+	<flow name="b22_gettask_expFlow" doc:id="5a5d52e3-5dbf-4442-b80a-cf2d8f9f4043" >
+		<http:listener doc:name="Listener" doc:id="8d07c679-eaea-40e4-9836-885bd595d0bb" config-ref="HTTP_Listener_config" path="/{method}"/>
+		<set-payload value="#[attributes.uriParams.method]" doc:name="Set Payload" doc:id="cc9322aa-5923-44aa-aadf-6b308b39f0f9" />
+		<ee:transform doc:name="Transform Message" doc:id="f414e96a-87c5-4215-bc17-230d30836f15" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="dc953c2d-d6f6-4e6a-8d68-1fbbd7978d13" name="#[payload]"/>
+	</flow>
+	<sub-flow name="get" doc:id="fedbf690-43fe-410a-82f8-5b9693d66fdd" >
+		<file:read doc:name="Read" doc:id="254eb5ec-e4c5-47fa-b3c4-ff6c4775df41" config-ref="File_Config" path="get.txt" outputMimeType="text/json"/>
+		<ee:transform doc:name="Transform Message" doc:id="73f40f89-1bfe-4b26-97dd-c29dc916269c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="a57f248c-47a1-4ca3-8643-e7c3b5dd5399" message="Log----- #[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="1948d918-e490-4d24-bff8-28ce24d60690" />
+	</sub-flow>
+	<sub-flow name="post" doc:id="cd2fb6fe-becc-4e7d-9e26-e475505887e7" >
+		<file:read doc:name="Read" doc:id="29bb9321-ec64-4164-9e95-1d6c2e4b39dd" config-ref="File_Config" path="post.txt" outputMimeType="application/json"/>
+		<ee:transform doc:name="Transform Message" doc:id="52e5eac9-bcd9-47b6-a8fc-a2a996dce2e1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="1997f62a-0b8c-40fd-b243-63c7af0940af" />
+	</sub-flow>
+	<sub-flow name="put" doc:id="4df10af0-0327-415a-b96f-a19830c11845" >
+		<file:read doc:name="Read" doc:id="13c77f21-7369-427c-8d4e-0898468cd1ad" config-ref="File_Config" path="put.txt" outputMimeType="application/json"/>
+		<ee:transform doc:name="Transform Message" doc:id="6a59c8f1-a2c0-4ed2-aaa5-6b1053eafb1c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="12960280-76c6-4c34-943d-b0013ae82a2a" />
+	</sub-flow>
+</mule>
