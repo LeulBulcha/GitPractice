@@ -24,6 +24,7 @@ payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="Flow Reference" doc:id="dc953c2d-d6f6-4e6a-8d68-1fbbd7978d13" name="#[payload]"/>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="7067dfc1-ee09-4a77-a0a2-4e5f0a4d640d" />
 	</flow>
 	<sub-flow name="get" doc:id="fedbf690-43fe-410a-82f8-5b9693d66fdd" >
 		<file:read doc:name="Read" doc:id="254eb5ec-e4c5-47fa-b3c4-ff6c4775df41" config-ref="File_Config" path="get.txt" outputMimeType="text/json"/>
